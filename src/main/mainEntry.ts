@@ -1,4 +1,5 @@
 import { app, BrowserWindow, BrowserWindowConstructorOptions } from 'electron';
+import { CustomScheme } from './CustomScheme';
 
 /**
  * NOTE: It'll don't display any warnings in render process devtool console if the value is true.
@@ -25,5 +26,15 @@ app.whenReady().then(() => {
   mainWindow = new BrowserWindow(config);
   mainWindow.webContents.openDevTools({ mode: 'undocked' });
 
-  mainWindow.loadURL(process.argv[2]);
+  /**
+   * NOTE: Distinguishing different environments
+   *
+   * If the param of process.argv[2] is existed, we think it's development env, otherwise is production env.
+   */
+  if (process.argv[2]) {
+    mainWindow.loadURL(process.argv[2]);
+  } else {
+    CustomScheme.registerSchema();
+    mainWindow.loadURL(`app://index.html`);
+  }
 });
