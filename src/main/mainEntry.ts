@@ -4,7 +4,7 @@ import { CustomScheme } from './CustomScheme';
 /**
  * NOTE: It'll don't display any warnings in render process devtool console if the value is true.
  */
-process.env.ELECTRON_DISABLE_SECURITY_WARNING = 'true';
+process.env.ELECTRON_DISABLE_SECURITY_WARNINGS = 'true';
 
 let mainWindow: BrowserWindow;
 
