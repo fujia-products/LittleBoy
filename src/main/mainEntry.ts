@@ -1,15 +1,23 @@
 import { app, BrowserWindow, BrowserWindowConstructorOptions } from 'electron';
+
 import { CustomScheme } from './CustomScheme';
+import { Updater } from './Updater';
+import { CommonWindowEvent } from './CommonWindowEvent';
 
 /**
  * NOTE: It'll don't display any warnings in render process devtool console if the value is true.
  */
 process.env.ELECTRON_DISABLE_SECURITY_WARNINGS = 'true';
 
+app.on('browser-window-created', (e, win) => {
+  CommonWindowEvent.registerWinEvent(win);
+});
+
 let mainWindow: BrowserWindow;
 
 app.whenReady().then(() => {
   const config: BrowserWindowConstructorOptions = {
+    frame: false,
     webPreferences: {
       /**
        * NOTE: If the app never import third party package, it doesn't consider the security issues.
@@ -36,5 +44,9 @@ app.whenReady().then(() => {
   } else {
     CustomScheme.registerSchema();
     mainWindow.loadURL(`app://index.html`);
+    // Updater.check();
   }
+
+  CommonWindowEvent.listen();
+  CommonWindowEvent.registerWinEvent(mainWindow);
 });
