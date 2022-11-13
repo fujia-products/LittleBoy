@@ -2,6 +2,8 @@
 import { ref, watch } from 'vue';
 import { useRoute } from 'vue-router';
 
+import { createDialog } from '../common/Dialog';
+
 const mainWindowRoutes = ref([
   {
     path: `/WindowMain/Chat`,
@@ -36,6 +38,32 @@ watch(
     deep: true,
   }
 );
+
+const openSettingWindow = async () => {
+  const config = {
+    modal: true,
+    width: 800,
+    webPreferences: {
+      webviewTag: false,
+    },
+  };
+
+  const settingDialog = await createDialog(
+    '/WindowSetting/AccountSetting',
+    config
+  );
+
+  const msg = {
+    msgName: 'hello',
+    value: 'msg from parent',
+  };
+
+  settingDialog.postMessage(msg);
+};
+
+window.addEventListener('message', (e) => {
+  console.log(e.data);
+});
 </script>
 
 <template>
@@ -56,7 +84,7 @@ watch(
       </router-link>
     </div>
     <div class="setting">
-      <div class="menuItem">
+      <div class="menuItem" @click="openSettingWindow">
         <i class="icon icon-setting"></i>
       </div>
     </div>

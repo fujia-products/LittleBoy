@@ -1,4 +1,9 @@
-import { BrowserWindow, ipcMain, app } from 'electron';
+import {
+  BrowserWindow,
+  ipcMain,
+  app,
+  BrowserWindowConstructorOptions,
+} from 'electron';
 
 type AppGetPathName =
   | 'home'
@@ -57,6 +62,9 @@ export class CommonWindowEvent {
     });
   }
 
+  /**
+   * NOTE: The handler for common events in main process.
+   */
   static registerWinEvent(win: BrowserWindow) {
     win.on('maximize', () => {
       win.webContents.send('windowMaximized');
@@ -64,6 +72,49 @@ export class CommonWindowEvent {
 
     win.on('unmaximize', () => {
       win.webContents.send('windowUnmaximized');
+    });
+
+    win.webContents.setWindowOpenHandler((params) => {
+      const winBaseConfig: BrowserWindowConstructorOptions & {
+        [index: string]: any;
+        webPreferences: {
+          [index: string]: any;
+        };
+      } = {
+        frame: false,
+        show: true,
+        webPreferences: {
+          nodeIntegration: true,
+          webSecurity: false,
+          allowRunningInsecureContent: true,
+          contextIsolation: false,
+          webviewTag: true,
+          spellcheck: false,
+          disableHtmlFullscreenWindowResize: true,
+        },
+      };
+
+      // custom window configurations
+      const features = JSON.parse(params.features);
+
+      for (const p in features) {
+        if (p === 'webPreferences') {
+          for (let p2 in features.webPreferences) {
+            winBaseConfig.webPreferences[p2] = features.webPreferences[p2];
+          }
+        } else {
+          winBaseConfig[p] = features[p];
+        }
+      }
+
+      if (winBaseConfig['modal'] === true) {
+        winBaseConfig.parent = win;
+      }
+
+      return {
+        action: 'allow',
+        overrideBrowserWindowOptions: winBaseConfig,
+      };
     });
   }
 }

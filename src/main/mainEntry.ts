@@ -30,9 +30,10 @@ app.whenReady().then(() => {
       spellcheck: false,
       disableHtmlFullscreenWindowResize: true,
     },
+    show: false,
   };
   mainWindow = new BrowserWindow(config);
-  mainWindow.webContents.openDevTools({ mode: 'undocked' });
+  // mainWindow.webContents.openDevTools({ mode: 'undocked' });
 
   /**
    * NOTE: Distinguishing different environments
@@ -47,6 +48,9 @@ app.whenReady().then(() => {
     // Updater.check();
   }
 
+  /**
+   * NOTE: These message channels should be registered after app ready.
+   */
   CommonWindowEvent.listen();
   CommonWindowEvent.registerWinEvent(mainWindow);
 });
