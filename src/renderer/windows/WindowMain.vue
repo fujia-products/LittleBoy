@@ -3,9 +3,16 @@ import { ipcRenderer } from 'electron';
 import { onMounted } from 'vue';
 
 import BarLeft from '../components/BarLeft.vue';
+import { db } from '../../common/db';
 
 onMounted(() => {
   ipcRenderer.invoke('showWindow');
+
+  db('Chat')
+    .first()
+    .then((obj) => {
+      console.log(obj);
+    });
 });
 </script>
 

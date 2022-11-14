@@ -1,4 +1,6 @@
 import { ViteDevServer } from 'vite';
+import { internalModule } from './internalModule';
+import fse from 'fs-extra';
 
 export const devPlugin = () => {
   return {
@@ -46,6 +48,7 @@ export const getReplacer = () => {
   const externalModels = [
     'os',
     'fs',
+    'path',
     'events',
     'child_process',
     'crypto',

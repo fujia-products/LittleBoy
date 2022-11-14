@@ -52,5 +52,4 @@ app.whenReady().then(() => {
    * NOTE: These message channels should be registered after app ready.
    */
   CommonWindowEvent.listen();
-  CommonWindowEvent.registerWinEvent(mainWindow);
 });
